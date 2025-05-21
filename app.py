@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file 
 import yt_dlp
 import os
 import uuid
 import threading
 import time
+import subprocess
 
 app = Flask(__name__)
 
@@ -38,7 +39,7 @@ def fetch_formats():
 @app.route('/download', methods=['POST'])
 def download():
     url = request.form['url']
-    quality = request.form['quality']
+    quality = request.form['format']
     download_type = request.form['type']
     
     unique_id = str(uuid.uuid4())
@@ -65,6 +66,12 @@ def download():
         }
 
     try:
+        result = subprocess.run(
+            ['yt-dlp', '--cookies', 'youtube.com_cookies.txt', '-F', url],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
     except Exception as e:
