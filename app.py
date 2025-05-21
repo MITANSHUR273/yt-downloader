@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, send_file 
+from flask import Flask, render_template, request, send_file
 import yt_dlp
 import os
 import uuid
 import threading
 import time
-import subprocess
+import subprocess  # Added for subprocess.run
 
 app = Flask(__name__)
 
@@ -39,7 +39,7 @@ def fetch_formats():
 @app.route('/download', methods=['POST'])
 def download():
     url = request.form['url']
-    quality = request.form['format']
+    quality = request.form['quality']
     download_type = request.form['type']
     
     unique_id = str(uuid.uuid4())
@@ -66,6 +66,7 @@ def download():
         }
 
     try:
+        # Added the line from the image
         result = subprocess.run(
             ['yt-dlp', '--cookies', 'youtube.com_cookies.txt', '-F', url],
             stdout=subprocess.PIPE,
