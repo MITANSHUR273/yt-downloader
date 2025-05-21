@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Video Downloader</title>
+  <style>
+    body {
+      background: #f9f9f9;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    h2 {
+      color: #222;
+      margin-bottom: 20px;
+    }
+
+    .form-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .url-input {
+      padding: 15px;
+      width: 600px;
+      border: 3px solid #f30464;
+      border-radius: 10px 0 0 10px;
+      font-size: 16px;
+      background-color: #333;
+      color: #fff;
+      outline: none;
+    }
+
+    .start-btn {
+      padding: 15px 25px;
+      border: none;
+      background-color: #f30464;
+      color: white;
+      font-size: 16px;
+      border-radius: 0 10px 10px 0;
+      cursor: pointer;
+    }
+
+    select, .download-btn {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+
+    .download-btn {
+      background-color: #f30464;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Download videos as MP4 or extract MP3 audio from YouTube in seconds</h2>
+
+  <form class="form-box" method="POST" action="/fetch_formats">
+    <input type="text" name="url" placeholder="Search or paste link here..." class="url-input" required>
+    <button type="submit" class="start-btn">Start &raquo;</button>
+  </form>
+
+  {% if formats %}
+  <form method="POST" action="/download">
+    <input type="hidden" name="url" value="{{ url }}">
+
+    <label>Download Type:</label><br>
+    <select name="type">
+      <option value="video">Video (MP4)</option>
+    </select><br><br>
+
+    <label>Select Quality:</label><br>
+    <select name="quality">
+      {% for f in formats %}
+        <option value="{{ f['format_id'] }}">{{ f['resolution'] }} | {{ f['format_note'] }} | {{ f['ext'] }}</option>
+      {% endfor %}
+    </select><br><br>
+
+    <button type="submit" class="download-btn">Download</button>
+  </form>
+  {% endif %}
+
+</body>
+</html>
